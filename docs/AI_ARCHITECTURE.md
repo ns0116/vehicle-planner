@@ -11,17 +11,17 @@
 ### 📊 フェーズ1：戦略的環境分析（PEST & 3C）
 *Designed by: Marketing Expert Subagent*
 
-* **Layer 1: 市場調査 (Market Research)**
+* **Layer 1: 市場調査 (Market Research) - 🔍 Dynamic Web Search**
   * グローバル市場構造を解剖し、TAM/SAM/SOMおよびCAGRを定量的に評価。マクロ経済動向、購買力シフトから市場の真の成長ドライバーと潜在的リスクを洞察。
-* **Layer 2: 法規制調査 (Regulation Research)**
+* **Layer 2: 法規制調査 (Regulation Research) - 🔍 Dynamic Web Search**
   * 環境規制、安全基準、地政学的リスクを「ルール形成による競争優位（Regulatory Moat）」や「参入障壁」という戦略的変数として評価。
 * **Layer 3: 技術動向調査 (Tech Trends) - 🔍 Dynamic Web Search**
   * 指定のセグメント・パワートレインに対しリアルタイム検索を実行。技術のSカーブ、破壊的イノベーション（全固体電池、ギガキャスト等）を捉え、数年先の競争前提を定義。
-* **Layer 4: ユーザー調査 (Persona Setup)**
+* **Layer 4: ユーザー調査 (Persona Setup) - 🔍 Dynamic Web Search**
   * ペインポイント、真のJobs-to-be-Done（片付けるべき用事）、Willingness to Pay（支払意欲）を冷徹に分析し、Unmet Needsを特定。
 * **Layer 5: 競合調査 (Competitor Research) - 🔍 Dynamic Web Search**
   * 実際の競合他社を検索し、バリューチェーン、技術ポートフォリオ、戦略的意図をリバースエンジニアリング。自社の脅威となるKFSの差分を浮き彫りにする。
-* **Layer 7: 自社アセット・ブランド分析 (Company Analysis)**
+* **Layer 7: 自社アセット・ブランド分析 (Company Analysis) - 🔍 Dynamic Web Search**
   * VRIOフレームワークを用い、自社ブランドのコア・コンピタンスを評価。他社が構造的に追随できない『勝つための必然性（Right to Win）』と『強固な経済的堀（Moat）』を定義。
 
 ### 🎨 フェーズ2：人間中心設計とコンセプト創造（Design Thinking）
