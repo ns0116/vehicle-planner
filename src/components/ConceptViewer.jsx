@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
+import rehypeSanitize from 'rehype-sanitize';
 import './ConceptViewer.css';
 
 export default function ConceptViewer({ markdownContent }) {
@@ -42,7 +43,7 @@ export default function ConceptViewer({ markdownContent }) {
   if (layers.length === 0) {
     return (
       <div className="glass-panel concept-viewer">
-        <ReactMarkdown rehypePlugins={[rehypeRaw]}>{markdownContent}</ReactMarkdown>
+        <ReactMarkdown rehypePlugins={[rehypeRaw, rehypeSanitize]}>{markdownContent}</ReactMarkdown>
       </div>
     );
   }
@@ -51,7 +52,7 @@ export default function ConceptViewer({ markdownContent }) {
   if (layers.length < 3) {
     return (
        <div className="glass-panel concept-viewer fallback-view">
-        <ReactMarkdown rehypePlugins={[rehypeRaw]}>{markdownContent}</ReactMarkdown>
+        <ReactMarkdown rehypePlugins={[rehypeRaw, rehypeSanitize]}>{markdownContent}</ReactMarkdown>
       </div>
     );
   }
@@ -71,7 +72,7 @@ export default function ConceptViewer({ markdownContent }) {
               <h3>{layer.title}</h3>
             </div>
             <div className="layer-card-body markdown-body">
-              <ReactMarkdown rehypePlugins={[rehypeRaw]}>{layer.body}</ReactMarkdown>
+              <ReactMarkdown rehypePlugins={[rehypeRaw, rehypeSanitize]}>{layer.body}</ReactMarkdown>
             </div>
           </div>
         ))}

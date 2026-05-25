@@ -34,18 +34,23 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
   color: var(--text-muted);
   font-size: 0.9rem;
   font-weight: 500;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   border-radius: var(--radius-md);
-  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .settings-btn:hover {
-  background: rgba(0,0,0,0.05);
+  background: rgba(255, 255, 255, 0.8);
   color: var(--text-main);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .main-content {
@@ -97,25 +102,27 @@
 }
 
 .form-group input {
-  padding: 1rem;
+  padding: 1.2rem;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(0,0,0,0.1);
-  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.5);
   font-size: 1rem;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   outline: none;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  backdrop-filter: blur(4px);
 }
 
 .form-group input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15), inset 0 2px 4px rgba(0,0,0,0.01);
+  background: rgba(255,255,255,0.9);
 }
 
 .generate-btn {
   background: var(--accent-gradient);
   color: white;
-  padding: 1rem;
+  padding: 1.2rem;
   border-radius: var(--radius-md);
   font-size: 1.1rem;
   font-weight: 600;
@@ -124,18 +131,34 @@
   justify-content: center;
   gap: 0.75rem;
   margin-top: 1rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md), var(--glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.generate-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; right: 100%; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: all 0.5s ease;
+}
+
+.generate-btn:hover:not(:disabled)::before {
+  left: 100%; right: -100%;
 }
 
 .generate-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px rgba(37, 99, 235, 0.5);
+  box-shadow: var(--shadow-lg), 0 0 25px rgba(56, 189, 248, 0.6);
 }
 
 .generate-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   filter: grayscale(0.5);
+  box-shadow: none;
 }
 
 .error-message {
@@ -184,23 +207,28 @@
   gap: 1rem;
   padding: 1rem;
   border-radius: var(--radius-md);
-  background: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.3);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.4);
   color: var(--text-muted);
-  transition: all 0.5s ease;
-  opacity: 0.5;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.6;
 }
 
 .layer-item.active {
-  background: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.85);
+  border-color: rgba(255,255,255,1);
   color: var(--primary);
   opacity: 1;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md), var(--glow);
   transform: translateX(10px);
 }
 
 .layer-item.completed {
+  background: rgba(255,255,255,0.5);
   color: var(--text-main);
   opacity: 0.8;
+  border-color: rgba(255,255,255,0.6);
 }
 
 .layer-icon {
@@ -235,9 +263,9 @@
 /* Modal */
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.2);
-  backdrop-filter: blur(4px);
+  inset: 0;
+  background: rgba(15, 23, 42, 0.2);
+  backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -248,10 +276,15 @@
 .modal-content {
   width: 100%;
   max-width: 500px;
-  padding: 2.5rem;
+  padding: 3rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 25px 50px -12px rgba(0, 0, 0, 0.1);
 }
 
 .modal-content h2 {
@@ -275,19 +308,33 @@
 }
 
 .cancel-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.8rem 1.8rem;
   border-radius: var(--radius-md);
-  background: rgba(0,0,0,0.05);
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(255,255,255,0.8);
   color: var(--text-main);
   font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background: rgba(255,255,255,0.9);
+  box-shadow: var(--shadow-sm);
 }
 
 .save-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.8rem 1.8rem;
   border-radius: var(--radius-md);
-  background: var(--primary);
+  background: var(--accent-gradient);
   color: white;
-  font-weight: 500;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm), var(--glow);
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md), 0 0 20px rgba(56, 189, 248, 0.6);
 }
 
 .actions-bar {
@@ -298,13 +345,20 @@
 }
 
 .back-btn {
-  padding: 0.75rem 1.5rem;
-  background: var(--surface);
+  padding: 0.8rem 1.8rem;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-md);
   font-weight: 500;
   color: var(--text-main);
   box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-md);
+  transform: translateX(-2px);
 }
 
 .fade-in {
@@ -314,4 +368,30 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Phase Group Styles */
+.phase-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.phase-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: var(--glow);
+}
+
+.phase-layers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }

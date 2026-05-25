@@ -1,0 +1,89 @@
+{
+  "industry_trends_2026": {
+    "sdv_and_os_architectures": {
+      "toyota_arene": {
+        "status": "Production debut in 2026 Toyota RAV4",
+        "features": [
+          "Toyota Safety Sense 4.0",
+          "Next-Gen Multimedia System",
+          "Over-the-Air (OTA) capabilities"
+        ],
+        "roadmap": "Decouple software from hardware, modular components, rollout to other vehicles in redesign cycles"
+      },
+      "vw_cariad": {
+        "status": "Restructured to partnership-led approach (Rivian, Xpeng, Bosch)",
+        "regional_strategy": {
+          "china": "CEA (China Electronic Architecture) with Xpeng for 2026; CEA 2.0 in 2027",
+          "global": "Zonal SDV architecture with Rivian and Qualcomm Snapdragon, 2027 launch (ID. EVERY1)"
+        },
+        "roadmap": "Gatekeeper for third-party software, focusing on automated driving and infotainment"
+      }
+    },
+    "autonomous_driving_adas": {
+      "l3_deployment": {
+        "status": "Early commercial phase, mass production beginning",
+        "timeline": "2027-2028 widespread personal vehicle integration (Ford UEV 2028, Porsche, Audi)",
+        "china_market": "Aggressive mass production by Li Auto, XPeng starting 2025-2026"
+      },
+      "l4_robotaxis": {
+        "status": "Scaling phase, transitioning from tech validation to profitability",
+        "timeline": "Broad geographic expansion in 2026, large-scale commercialization by 2030",
+        "key_players": "Waymo (targeting 20 cities by end of 2026), XPeng (L4 mass production H2 2026)"
+      },
+      "lidar_adoption": {
+        "trends": [
+          "Shift to Solid-State and FMCW (Frequency-Modulated Continuous Wave)",
+          "Integration into ADAS (L2+/L3) for redundancy and safety",
+          "Cost reduction and democratization to mid-range vehicles"
+        ],
+        "market_size_2026": "Estimated $1.4B - $3.8B",
+        "leadership": "Asia-Pacific, particularly China"
+      }
+    },
+    "next_gen_powertrains": {
+      "e_axle_miniaturization": {
+        "trends": [
+          "Fully integrated e-drive modules (motor, inverter, transmission)",
+          "Shared cooling systems and minimized mechanical losses",
+          "Stacked power cards for vertical space saving"
+        ]
+      },
+      "inverter_technologies": {
+        "sic_adoption": {
+          "status": "Dominant for traction inverters in premium/high-performance BEVs",
+          "benefits": "Handles high voltages (800V architectures) and temperatures, 70% lower power losses than Si"
+        },
+        "gan_adoption": {
+          "status": "Primarily used in onboard chargers (OBCs) and DC-DC converters",
+          "benefits": "Superior high-frequency switching capabilities, ultra-fast switching, smaller size"
+        },
+        "si_igbt": {
+          "status": "Still holds ~55% market share for entry-level BEVs and PHEVs due to cost advantages"
+        }
+      }
+    },
+    "manufacturing": {
+      "gigacasting_megacasting": {
+        "status": "Accelerated adoption to reduce EV weight, consolidate parts, and lower production costs",
+        "asian_oems": "Fastest adopters (BYD, Geely/Zeekr, Li Auto, NIO, XPeng, Chery/Huawei) using it for front/rear modules and battery housings",
+        "legacy_oems": {
+          "ford": "Unboxed assembly method for new EV platform",
+          "hyundai": "Hypercasting mass production starting in 2026",
+          "toyota": "Megacasting starting in 2026",
+          "volvo": "Investing in megacast rear floors for next-gen EVs",
+          "vw": "Developing megacasting techniques for Trinity EV platform"
+        },
+        "benefits": [
+          "Massive part consolidation",
+          "Manufacturing efficiency (unboxed assembly method)",
+          "Structural rigidity and lightweighting"
+        ],
+        "challenges": [
+          "Plant reconfiguration and high CAPEX (6,000-9,000+ ton presses)",
+          "Limited pool of skilled labor/expertise",
+          "Repairability and insurance costs"
+        ]
+      }
+    }
+  }
+}

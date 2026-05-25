@@ -1,23 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Settings, Sparkles, Car, Key, ChevronRight, Loader2, History, Save, Trash2 } from 'lucide-react';
+import { Settings, Car, Key, Loader2, History, Save, Trash2 } from 'lucide-react';
 import { generateConcept } from './aiService';
 import ConceptViewer from './components/ConceptViewer';
+import InputForm from './components/InputForm';
+import ProgressTracker from './components/ProgressTracker';
 import './App.css';
-
-const LAYERS = [
-  "Layer 1: 市場の推移・トレンド分析中...",
-  "Layer 2: 最新の法規制・政策調査中...",
-  "Layer 3: マクロな技術トレンド調査中...",
-  "Layer 4: ペルソナとライフスタイル設定中...",
-  "Layer 5: 競合車種のベンチマーク分析中...",
-  "Layer 6: VoC・ユーザーペインの抽出中...",
-  "Layer 7: 自社アセット・ブランドの強み分析中...",
-  "Layer 8: インサイト（本質的課題）の抽出中...",
-  "Layer 9: 飛躍的コンセプトの立案中...",
-  "Layer 10: 最終コンセプトの詳細具体化中..."
-];
-
-const POWERTRAIN_OPTIONS = ["ICE", "MHEV", "HEV", "PHEV", "BEV", "ERRV", "FCEV"];
 
 function App() {
   const [apiKey, setApiKey] = useState('');
@@ -155,64 +142,13 @@ function App() {
             <h2>次世代車両の条件を入力</h2>
             <p className="subtitle">OSINTとAIを活用し、既存の枠組みを打ち破るコンセプトを自律生成します。</p>
             
-            <form onSubmit={handleGenerate} className="input-form">
-              <div className="form-group">
-                <label>自社ブランド (OEM)</label>
-                <input 
-                  type="text" 
-                  value={brand}
-                  onChange={(e) => setBrand(e.target.value)}
-                  placeholder="例: トヨタ、テスラ、ポルシェ"
-                />
-              </div>
-              <div className="form-group">
-                <label>セグメント (例: Eセグ, コンパクト等)</label>
-                <input 
-                  type="text" 
-                  value={segment}
-                  onChange={(e) => setSegment(e.target.value)}
-                  placeholder="例: Eセグメント"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>ボディ形状 (例: セダン, SUV等)</label>
-                <input 
-                  type="text" 
-                  value={bodyType}
-                  onChange={(e) => setBodyType(e.target.value)}
-                  placeholder="例: セダン"
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label>パワートレイン (複数選択可)</label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginTop: '0.2rem' }}>
-                  {POWERTRAIN_OPTIONS.map(pt => (
-                    <label key={pt} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.9rem', background: powertrains.includes(pt) ? 'rgba(37, 99, 235, 0.1)' : 'rgba(255,255,255,0.6)', padding: '0.5rem 0.8rem', borderRadius: '8px', border: powertrains.includes(pt) ? '1px solid var(--primary)' : '1px solid rgba(0,0,0,0.1)', transition: 'all 0.2s ease' }}>
-                      <input 
-                        type="checkbox" 
-                        checked={powertrains.includes(pt)}
-                        onChange={(e) => {
-                          if (e.target.checked) setPowertrains([...powertrains, pt]);
-                          else setPowertrains(powertrains.filter(p => p !== pt));
-                        }}
-                        style={{ margin: 0, cursor: 'pointer' }}
-                      />
-                      <span style={{ fontWeight: powertrains.includes(pt) ? '600' : '400', color: powertrains.includes(pt) ? 'var(--primary)' : 'inherit' }}>{pt}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-              
-              {error && <div className="error-message">{error}</div>}
-              
-              <button type="submit" className="generate-btn" disabled={!segment || !bodyType}>
-                <Sparkles size={20} />
-                <span>コンセプトを生成</span>
-              </button>
-            </form>
+            <InputForm 
+              brand={brand} setBrand={setBrand}
+              segment={segment} setSegment={setSegment}
+              bodyType={bodyType} setBodyType={setBodyType}
+              powertrains={powertrains} setPowertrains={setPowertrains}
+              error={error} handleGenerate={handleGenerate}
+            />
           </div>
         )}
 
@@ -224,19 +160,7 @@ function App() {
             </div>
             <h2 className="text-gradient">AIが自律思考中...</h2>
             
-            <div className="layers-progress">
-              {LAYERS.map((layer, index) => (
-                <div 
-                  key={index} 
-                  className={`layer-item ${index === currentLayerIndex ? 'active' : ''} ${index < currentLayerIndex ? 'completed' : ''}`}
-                >
-                  <div className="layer-icon">
-                    {index < currentLayerIndex ? <ChevronRight size={16} /> : <div className="dot"></div>}
-                  </div>
-                  <span className="layer-text">{layer}</span>
-                </div>
-              ))}
-            </div>
+            <ProgressTracker currentLayerIndex={currentLayerIndex} />
           </div>
         )}
 
