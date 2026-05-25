@@ -37,7 +37,9 @@ const LAYER_INSTRUCTIONS = [
   "Layer 7: 自社アセット・ブランド分析 (Company Analysis)\n【重要】指定された自社ブランド（OEM）に対しリアルタイムのGoogle検索を実行し、最新のIR情報や技術発表を収集せよ。3Cの「Company」視点およびVRIOフレームワーク（価値、希少性、模倣困難性、組織）を用い、指定された自社ブランド（OEM）のコア・コンピタンスを評価せよ。単なる過去の遺産や主観的なブランドイメージではなく、対象セグメントの苛烈な競争環境において、他社が構造的に追随できない『勝つための必然性（Right to Win）』と『強固な経済的堀（Moat）』を厳密に定義せよ。",
   "Layer 8: プロファウンド・インサイトの抽出 (Define)\n単なる状況分析は不要だ。観察された矛盾の背後にある「人間心理の隠された真実（Insight）」を突き止め、解決すべき問題を根本から再定義（Define）せよ。自動車業界が長年「仕方のないトレードオフ」として放置してきた構造的限界と、ペルソナが心の底で渇望している本質的価値との間に横たわる深い溝を、鋭利な言葉で言語化すること。",
   "Layer 9: ラディカル・コンセプトの飛躍 (Ideate)\n漸進的な改善や、既存車両の延長線上にあるアイデアは即座に破棄せよ。見出したインサイトを起点に、業界のルールや制約を根底から破壊する急進的（Radical）なコンセプトを創出（Ideate）せよ。無関係な別領域のパラダイムを衝突させ、既存の競合車両を完全に陳腐化させるほどの「非常識かつ心躍るモビリティのビジョン」を打ち立てること。",
-  "Layer 10: 究極のUXとアーキテクチャの定義 (Prototype)\n退屈なスペックシートの羅列に逃げるな。そのコンセプトが実現した世界で、ユーザーが直面する「魔法のような瞬間（Magic Moments）」を、五感に訴えかける鮮烈なストーリーとして生々しく描写せよ（Prototype）。そして、その圧倒的な体験を現実のものとするための必須要件（革新的なパッケージング、パワートレーン構成、先進技術）を、検証可能な具体的な形として定義すること。"
+  "Layer 10: 究極のUXとアーキテクチャの定義 (Prototype)\n退屈なスペックシートの羅列に逃げるな。そのコンセプトが実現した世界で、ユーザーが直面する「魔法のような瞬間（Magic Moments）」を、五感に訴えかける鮮烈なストーリーとして生々しく描写せよ（Prototype）。そして、その圧倒的な体験を現実のものとするための必須要件（革新的なパッケージング、パワートレーン構成、先進技術）を、検証可能な具体的な形として定義すること。",
+  "Layer 11: 悪魔の代弁者による監査 (Red Team Audit)\n【重要】リアルタイムGoogle検索を用い、ここまで立案されたコンセプト（Layer 1〜10）の『粗探し』を徹底的に行え。技術的な実現不可能さ、コストの矛盾、競合（テスラやBYD等）に対する優位性の甘さを容赦なく批判し、致命的な欠陥を暴き出せ。",
+  "Layer 12: デザイン思考による再構築と可視化 (Radical Refinement & Visualization)\n監査役からの痛烈な批判を受け止め、デザイン思考を用いてコンセプトをさらに強靭かつ非常識なものへ練り直せ（自己修正ループ）。最後に、自社コンセプトと仮想の最強競合（例: テスラ）を比較するレーダーチャート用のデータを、必ず以下のJSONフォーマット（Markdownのコードブロック）で出力せよ。\n```json:radar\n[\n  { \"subject\": \"Performance\", \"A\": 120, \"B\": 110, \"fullMark\": 150 },\n  { \"subject\": \"UX\", \"A\": 98, \"B\": 130, \"fullMark\": 150 },\n  { \"subject\": \"Cost\", \"A\": 86, \"B\": 130, \"fullMark\": 150 },\n  { \"subject\": \"Tech\", \"A\": 99, \"B\": 100, \"fullMark\": 150 },\n  { \"subject\": \"Brand\", \"A\": 85, \"B\": 90, \"fullMark\": 150 }\n]\n```\nA=自社コンセプト, B=最強の競合 とし、各評価軸(subject)やスコアはコンセプトに合わせて適切に変更すること。"
 ];
 
 export async function generateConcept(apiKey, modelName, brand, segment, bodyType, powertrains, onProgress) {
@@ -92,7 +94,7 @@ export async function generateConcept(apiKey, modelName, brand, segment, bodyTyp
   let accumulatedContext = "";
 
   try {
-    let finalOutput = new Array(10).fill("");
+    let finalOutput = new Array(12).fill("");
 
     for (let i = 0; i < LAYER_INSTRUCTIONS.length; i++) {
       if (onProgress) {
@@ -106,9 +108,9 @@ export async function generateConcept(apiKey, modelName, brand, segment, bodyTyp
       // 次のレイヤーへのコンテキストとして追加
       accumulatedContext += `\n${result}\n\n`;
 
-      // 最後のレイヤー以外は、意図的に5秒待機して無料枠の制限を確実に回避する
+      // 最後のレイヤー以外は、意図的に8秒待機して無料枠の制限を確実に回避する
       if (i < LAYER_INSTRUCTIONS.length - 1) {
-        await sleep(5000);
+        await sleep(8000);
       }
     }
 

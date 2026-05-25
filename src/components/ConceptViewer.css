@@ -82,6 +82,16 @@
   box-shadow: var(--shadow-sm), var(--glow);
 }
 
+.badge-red {
+  background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
+.badge-gold {
+  background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
 .layer-card-header h3 {
   font-size: 1.5rem;
   color: var(--text-main);
