@@ -28,25 +28,26 @@ const SYSTEM_PROMPT = `
 `;
 
 const LAYER_INSTRUCTIONS = [
-  "Layer 1: 市場調査 (Market Research)\nターゲット市場を特定し、今後の市場規模の推移やトレンドを分析。",
-  "Layer 2: 法規制調査 (Regulation Research)\n該当市場における最新の法規制（エミッション規制、ICE販売禁止目標など）を抽出。",
-  "Layer 3: ユーザー調査 (Persona Setup)\n主要な顧客層とライフスタイルを分析し、解像度の高いペルソナを設定。",
-  "Layer 4: 競合調査 (Competitor Research)\nベンチマークとなる代表的な既存車種の特徴とスペックを分析。",
-  "Layer 5: VoC調査 (Voice of Customer)\nユーザーの生の声や不満点（NVH、居住性、操作性など）を抽出。",
-  "Layer 6: インサイト考察 (Insight Extraction)\nペルソナが本当に求めている「本質的な価値」と、既存車両が抱える「構造的な妥協点」を深く言語化。",
-  "Layer 7: 技術動向調査 (Tech Trends)\n抽出されたインサイト（課題）を解決する手段として、数年後に実装可能となる最新の要素技術（バッテリー、e-Axleなど）を探索・提案。",
-  "Layer 8: 目標コンセプト立案 (Ideation)\n既存の前提を疑う「飛躍したコンセプトアイデア」を3案提示。",
-  "Layer 9: コンセプトの具体化 (Concept Definition)\n3案のうち最も革新的かつ実現時のインパクトが大きい1案を選定し、以下のフォーマットで詳細を定義。\n- コアコンセプト: （一行定義）\n- ハードウェア構成: （システム出力、モーター/バッテリー配置、駆動方式、サスペンション形式、パッケージングの特長）\n- 必要技術とブレイクスルー: （クリアすべき最大の技術的ハードルとその解決の方向性）"
+  "Layer 1: 市場調査 (Market Research)\n指定されたセグメント・ボディタイプのグローバル市場における成長性、販売トレンド、主要ターゲット層の人口動態を分析。",
+  "Layer 2: 法規制調査 (Regulation Research)\n対象市場における環境規制（排出ガス、燃費）、安全基準、インフラ整備状況（充電網など）の最新動向を整理。",
+  "Layer 3: 技術動向調査 (Tech Trends)\n自動運転、電動化、コネクテッドなど、数年後の市場の前提となるマクロな技術トレンドを分析。",
+  "Layer 4: ユーザー調査 (Persona Setup)\n主要な顧客層とライフスタイルを分析し、解像度の高いペルソナを設定。",
+  "Layer 5: 競合調査 (Competitor Research)\nベンチマークとなる代表的な既存車種の特徴とスペックを分析。",
+  "Layer 6: VoC調査 (Voice of Customer)\nユーザーの生の声や不満点（NVH、居住性、操作性など）を抽出。",
+  "Layer 7: 自社アセット・ブランド分析 (Company Analysis)\n指定された自社ブランド（OEM）が持つ歴史的資産、コア技術、ブランドイメージを分析し、今回のセグメントにおいて他社には真似できない『自社ならではの強み（Right to Win）』を定義。",
+  "Layer 8: インサイト考察 (Insight Extraction)\nマクロ環境と自社の強みを踏まえ、ペルソナが本当に求めている「本質的な価値」と、既存車両が抱える「構造的な妥協点」を深く言語化。",
+  "Layer 9: 目標コンセプト立案 (Ideation)\n抽出されたインサイトと『自社の強み』を掛け合わせ、競合には絶対に真似できない「飛躍したコンセプトアイデア」を3案提示。",
+  "Layer 10: コンセプトの具体化 (Concept Definition)\n3案のうち最も革新的かつ自社ブランドのコア価値を体現する1案を選定し、以下のフォーマットで詳細を定義。\n- コアコンセプト: （一行定義）\n- ハードウェア構成: （システム出力、モーター/バッテリー配置、駆動方式、サスペンション形式、パッケージングの特長）\n- 必要技術と自社の勝ち筋: （クリアすべき最大の技術的ハードルと、なぜ自社ならそれを解決できるのか）"
 ];
 
-export async function generateConcept(apiKey, modelName, segment, bodyType, powertrains, onProgress) {
+export async function generateConcept(apiKey, modelName, brand, segment, bodyType, powertrains, onProgress) {
   if (!apiKey) {
     throw new Error('APIキーが設定されていません。');
   }
 
   const ai = new GoogleGenAI({ apiKey: apiKey });
   const powertrainText = powertrains && powertrains.length > 0 ? `\n指定パワートレイン: 【${powertrains.join(', ')}】` : '';
-  const basePrompt = `対象となるセグメント: 【${segment}】\n対象となるボディ形状: 【${bodyType}】${powertrainText}\n`;
+  const basePrompt = `自社ブランド: 【${brand}】\n対象となるセグメント: 【${segment}】\n対象となるボディ形状: 【${bodyType}】${powertrainText}\n`;
 
   let completed = [];
   const reportProgress = (active) => {
@@ -91,7 +92,7 @@ export async function generateConcept(apiKey, modelName, segment, bodyType, powe
   let accumulatedContext = "";
 
   try {
-    let finalOutput = new Array(9).fill("");
+    let finalOutput = new Array(10).fill("");
 
     for (let i = 0; i < LAYER_INSTRUCTIONS.length; i++) {
       if (onProgress) {
