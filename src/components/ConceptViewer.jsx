@@ -88,7 +88,7 @@ export default function ConceptViewer({ markdownContent }) {
       
       <div className="layers-stack">
         {layers.map((layer, index) => (
-          <div key={index} className="layer-card glass-panel fade-in" style={{ animationDelay: `${index * 0.1s}` }}>
+          <div key={index} className="layer-card glass-panel fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
             <div className="layer-card-header">
               <span className={`layer-badge ${layer.number === '11' ? 'badge-red' : layer.number === '12' ? 'badge-gold' : ''}`}>Layer {layer.number}</span>
               <h3>{layer.title}</h3>
