@@ -51,11 +51,6 @@ export async function generateConcept(apiKey, modelName, brand, segment, bodyTyp
   const powertrainText = powertrains && powertrains.length > 0 ? `\n指定パワートレイン: 【${powertrains.join(', ')}】` : '';
   const basePrompt = `自社ブランド: 【${brand}】\n対象となるセグメント: 【${segment}】\n対象となるボディ形状: 【${bodyType}】${powertrainText}\n`;
 
-  let completed = [];
-  const reportProgress = (active) => {
-    if (onProgress) onProgress(active, completed);
-  };
-
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   const callGemini = async (layerIndex, context, retries = 3) => {
@@ -119,8 +114,8 @@ export async function generateConcept(apiKey, modelName, brand, segment, bodyTyp
     console.error('Generation Error:', error);
     const isRateLimit = error.status === 429 || error.status === 'RESOURCE_EXHAUSTED' || (error.message && error.message.includes('429'));
     if (isRateLimit) {
-      throw new Error('APIの無料枠制限（短時間のリクエスト集中）に達しました。約1分ほど待ってから再度お試しください。');
+      throw new Error('APIの無料枠制限（短時間のリクエスト集中）に達しました。約1分ほど待ってから再度お試しください。', { cause: error });
     }
-    throw new Error(error.message || 'コンセプトの生成中にエラーが発生しました。');
+    throw new Error(error.message || 'コンセプトの生成中にエラーが発生しました。', { cause: error });
   }
 }
