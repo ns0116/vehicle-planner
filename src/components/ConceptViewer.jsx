@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
@@ -43,7 +43,7 @@ export default function ConceptViewer({ markdownContent }) {
 
   // Custom renderer for ReactMarkdown to intercept 'json:radar'
   const customRenderers = {
-    code({node, inline, className, children, ...props}) {
+    code({inline, className, children, ...props}) {
       const match = /language-json:radar/.exec(className || '');
       if (!inline && match) {
         try {
@@ -63,7 +63,7 @@ export default function ConceptViewer({ markdownContent }) {
               </ResponsiveContainer>
             </div>
           );
-        } catch (e) {
+        } catch {
           return <div style={{ color: '#ff4d4f', padding: '10px', background: 'rgba(255,0,0,0.1)', borderRadius: '8px' }}>⚠️ グラフデータの解析に失敗しました。</div>;
         }
       }

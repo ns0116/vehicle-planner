@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Settings, Car, Key, Loader2, History, Save, Trash2 } from 'lucide-react';
 import { generateConcept } from './aiService';
 import ConceptViewer from './components/ConceptViewer';
@@ -6,10 +6,20 @@ import InputForm from './components/InputForm';
 import ProgressTracker from './components/ProgressTracker';
 import './App.css';
 
+function loadSavedConcepts() {
+  const savedHistory = localStorage.getItem('concept_history');
+  if (!savedHistory) return [];
+  try {
+    return JSON.parse(savedHistory);
+  } catch {
+    return [];
+  }
+}
+
 function App() {
-  const [apiKey, setApiKey] = useState('');
-  const [modelName, setModelName] = useState('gemini-2.5-flash');
-  const [showSettings, setShowSettings] = useState(false);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
+  const [modelName, setModelName] = useState(() => localStorage.getItem('gemini_model_name') || 'gemini-2.5-flash');
+  const [showSettings, setShowSettings] = useState(() => !localStorage.getItem('gemini_api_key'));
   const [brand, setBrand] = useState('');
   const [segment, setSegment] = useState('');
   const [bodyType, setBodyType] = useState('');
@@ -18,35 +28,8 @@ function App() {
   const [currentLayerIndex, setCurrentLayerIndex] = useState(0);
   const [generatedResult, setGeneratedResult] = useState('');
   const [error, setError] = useState('');
-  const [savedConcepts, setSavedConcepts] = useState([]);
+  const [savedConcepts, setSavedConcepts] = useState(loadSavedConcepts);
   const [showHistory, setShowHistory] = useState(false);
-
-  // Load API key from local storage on mount
-  useEffect(() => {
-    const savedKey = localStorage.getItem('gemini_api_key');
-    const savedModel = localStorage.getItem('gemini_model_name');
-    const savedHistory = localStorage.getItem('concept_history');
-    
-    if (savedHistory) {
-      try { setSavedConcepts(JSON.parse(savedHistory)); } catch (e) {}
-    }
-    
-    if (savedModel) {
-      setModelName(savedModel);
-    }
-    if (savedKey) {
-      setApiKey(savedKey);
-    } else {
-      setShowSettings(true);
-    }
-  }, []);
-
-  // Reset progress when starting generation
-  useEffect(() => {
-    if (!isGenerating) {
-      setCurrentLayerIndex(0);
-    }
-  }, [isGenerating]);
 
   const handleSaveKey = (e) => {
     e.preventDefault();
@@ -96,6 +79,7 @@ function App() {
     setIsGenerating(true);
     setError('');
     setGeneratedResult('');
+    setCurrentLayerIndex(0);
 
     try {
       const result = await generateConcept(
