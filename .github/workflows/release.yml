@@ -24,7 +24,7 @@ jobs:
         with:
           script: |
             const tag = '${{ inputs.tag }}';
-            const body = `${{ inputs.body }}`;
+            const body = ${{ toJSON(inputs.body) }};
 
             // Create tag
             await github.rest.git.createRef({
