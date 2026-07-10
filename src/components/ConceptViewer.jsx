@@ -1,12 +1,54 @@
 import { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import rehypeSanitize from 'rehype-sanitize';
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import './ConceptViewer.css';
 
+// Allow <details>/<summary> that the AI system prompt explicitly generates for source citations
+const sanitizeSchema = {
+  ...defaultSchema,
+  tagNames: [...(defaultSchema.tagNames ?? []), 'details', 'summary'],
+  attributes: {
+    ...defaultSchema.attributes,
+    details: ['open'],
+  },
+};
+
+// Defined outside component to avoid recreation on every render
+const customRenderers = {
+  code({ className, children, ...props }) {
+    const match = /language-json:radar/.exec(className || '');
+    // Inline code never has a language class, so matching className is sufficient
+    if (match) {
+      try {
+        const data = JSON.parse(String(children).replace(/\n$/, ''));
+        return (
+          <div className="radar-chart-container" style={{ width: '100%', height: 350, marginTop: '20px', marginBottom: '20px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '12px', padding: '10px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
+                <PolarGrid stroke="rgba(255,255,255,0.2)" />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: '#00f2fe', fontSize: 12 }} />
+                <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
+                <Radar name="自社コンセプト" dataKey="A" stroke="#00f2fe" fill="#00f2fe" fillOpacity={0.6} />
+                <Radar name="最強の競合" dataKey="B" stroke="#ff007a" fill="#ff007a" fillOpacity={0.4} />
+                <Tooltip wrapperStyle={{ backgroundColor: 'rgba(10, 14, 23, 0.9)', border: '1px solid #00f2fe', color: '#fff' }} />
+                <Legend />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      } catch {
+        return <div style={{ color: '#ff4d4f', padding: '10px', background: 'rgba(255,0,0,0.1)', borderRadius: '8px' }}>⚠️ グラフデータの解析に失敗しました。</div>;
+      }
+    }
+    return <code className={className} {...props}>{children}</code>;
+  }
+};
+
+const rehypePlugins = [rehypeRaw, [rehypeSanitize, sanitizeSchema]];
+
 export default function ConceptViewer({ markdownContent }) {
-  // Parse the markdown into layers
   const layers = useMemo(() => {
     if (!markdownContent) return [];
     
@@ -41,40 +83,10 @@ export default function ConceptViewer({ markdownContent }) {
     });
   }, [markdownContent]);
 
-  // Custom renderer for ReactMarkdown to intercept 'json:radar'
-  const customRenderers = {
-    code({inline, className, children, ...props}) {
-      const match = /language-json:radar/.exec(className || '');
-      if (!inline && match) {
-        try {
-          const data = JSON.parse(String(children).replace(/\n$/, ''));
-          return (
-            <div className="radar-chart-container" style={{ width: '100%', height: 350, marginTop: '20px', marginBottom: '20px', background: 'rgba(0, 0, 0, 0.2)', borderRadius: '12px', padding: '10px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
-                  <PolarGrid stroke="rgba(255,255,255,0.2)" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fill: '#00f2fe', fontSize: 12 }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
-                  <Radar name="自社コンセプト" dataKey="A" stroke="#00f2fe" fill="#00f2fe" fillOpacity={0.6} />
-                  <Radar name="最強の競合" dataKey="B" stroke="#ff007a" fill="#ff007a" fillOpacity={0.4} />
-                  <Tooltip wrapperStyle={{ backgroundColor: 'rgba(10, 14, 23, 0.9)', border: '1px solid #00f2fe', color: '#fff' }} />
-                  <Legend />
-                </RadarChart>
-              </ResponsiveContainer>
-            </div>
-          );
-        } catch {
-          return <div style={{ color: '#ff4d4f', padding: '10px', background: 'rgba(255,0,0,0.1)', borderRadius: '8px' }}>⚠️ グラフデータの解析に失敗しました。</div>;
-        }
-      }
-      return <code className={className} {...props}>{children}</code>;
-    }
-  };
-
   if (layers.length === 0) {
     return (
       <div className="glass-panel concept-viewer">
-        <ReactMarkdown rehypePlugins={[rehypeRaw, rehypeSanitize]} components={customRenderers}>{markdownContent}</ReactMarkdown>
+        <ReactMarkdown rehypePlugins={rehypePlugins} components={customRenderers}>{markdownContent}</ReactMarkdown>
       </div>
     );
   }
@@ -85,7 +97,7 @@ export default function ConceptViewer({ markdownContent }) {
         <h2 className="text-gradient">Generated Concept Analysis</h2>
         <p>AIが思考したコンセプト立案の全プロセス（監査と再構築ループを含む）</p>
       </div>
-      
+
       <div className="layers-stack">
         {layers.map((layer, index) => (
           <div key={index} className="layer-card glass-panel fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
@@ -94,7 +106,7 @@ export default function ConceptViewer({ markdownContent }) {
               <h3>{layer.title}</h3>
             </div>
             <div className="layer-card-body markdown-body">
-              <ReactMarkdown rehypePlugins={[rehypeRaw, rehypeSanitize]} components={customRenderers}>{layer.body}</ReactMarkdown>
+              <ReactMarkdown rehypePlugins={rehypePlugins} components={customRenderers}>{layer.body}</ReactMarkdown>
             </div>
           </div>
         ))}

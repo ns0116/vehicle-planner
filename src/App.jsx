@@ -43,6 +43,7 @@ function App() {
     const newConcept = {
       id: Date.now(),
       date: new Date().toLocaleString(),
+      brand,
       segment,
       bodyType,
       powertrains,
@@ -61,6 +62,7 @@ function App() {
   };
 
   const loadConcept = (concept) => {
+    setBrand(concept.brand || '');
     setSegment(concept.segment);
     setBodyType(concept.bodyType);
     setPowertrains(concept.powertrains || []);
@@ -220,9 +222,11 @@ function App() {
                 {savedConcepts.map(c => (
                   <div key={c.id} style={{ padding: '1rem', background: 'rgba(255,255,255,0.6)', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s ease' }} className="history-card">
                     <div style={{ cursor: 'pointer', flex: 1 }} onClick={() => loadConcept(c)}>
-                      <h4 style={{ color: 'var(--primary)', marginBottom: '0.25rem', fontSize: '1.1rem' }}>{c.segment} × {c.bodyType}</h4>
+                      <h4 style={{ color: 'var(--primary)', marginBottom: '0.25rem', fontSize: '1.1rem' }}>
+                        {c.brand ? `${c.brand} / ` : ''}{c.segment} × {c.bodyType}
+                      </h4>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                        {c.powertrains && c.powertrains.length > 0 ? `PT: ${c.powertrains.join(', ')} | ` : ''} {c.date}
+                        {c.powertrains && c.powertrains.length > 0 ? `PT: ${c.powertrains.join(', ')} | ` : ''}{c.date}
                       </div>
                     </div>
                     <button onClick={(e) => { e.stopPropagation(); handleDeleteConcept(c.id); }} style={{ background: 'transparent', color: '#ef4444', padding: '0.5rem', borderRadius: '8px' }} className="delete-btn">
