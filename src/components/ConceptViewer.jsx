@@ -17,7 +17,7 @@ const sanitizeSchema = {
 
 // Defined outside component to avoid recreation on every render
 const customRenderers = {
-  code({ node, className, children, ...props }) {
+  code({ className, children, ...props }) {
     const match = /language-json:radar/.exec(className || '');
     // Inline code never has a language class, so matching className is sufficient
     if (match) {
