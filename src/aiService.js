@@ -89,18 +89,12 @@ export async function generateConcept(apiKey, modelName, brand, segment, bodyTyp
   let accumulatedContext = "";
 
   try {
-    let finalOutput = new Array(12).fill("");
-
     for (let i = 0; i < LAYER_INSTRUCTIONS.length; i++) {
       if (onProgress) {
         onProgress(i);
       }
 
-      // API呼び出し（リトライロジック含む）
       const result = await callGemini(i, accumulatedContext);
-      finalOutput[i] = result;
-      
-      // 次のレイヤーへのコンテキストとして追加
       accumulatedContext += `\n${result}\n\n`;
 
       // 最後のレイヤー以外は、意図的に8秒待機して無料枠の制限を確実に回避する
