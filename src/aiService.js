@@ -42,7 +42,9 @@ const LAYER_INSTRUCTIONS = [
   "Layer 12: デザイン思考による再構築と可視化 (Radical Refinement & Visualization)\n監査役からの痛烈な批判を受け止め、デザイン思考を用いてコンセプトをさらに強靭かつ非常識なものへ練り直せ（自己修正ループ）。最後に、自社コンセプトと仮想の最強競合（例: テスラ）を比較するレーダーチャート用のデータを、必ず以下のJSONフォーマット（Markdownのコードブロック）で出力せよ。\n```json:radar\n[\n  { \"subject\": \"Performance\", \"A\": 120, \"B\": 110, \"fullMark\": 150 },\n  { \"subject\": \"UX\", \"A\": 98, \"B\": 130, \"fullMark\": 150 },\n  { \"subject\": \"Cost\", \"A\": 86, \"B\": 130, \"fullMark\": 150 },\n  { \"subject\": \"Tech\", \"A\": 99, \"B\": 100, \"fullMark\": 150 },\n  { \"subject\": \"Brand\", \"A\": 85, \"B\": 90, \"fullMark\": 150 }\n]\n```\nA=自社コンセプト, B=最強の競合 とし、各評価軸(subject)やスコアはコンセプトに合わせて適切に変更すること。"
 ];
 
-export async function generateConcept(apiKey, modelName, brand, segment, bodyType, powertrains, onProgress) {
+const CONTEXT_WINDOW_SIZE = 4;
+
+export async function generateConcept(apiKey, modelName, brand, segment, bodyType, powertrains, onProgress, signal) {
   if (!apiKey) {
     throw new Error('APIキーが設定されていません。');
   }
@@ -86,25 +88,30 @@ export async function generateConcept(apiKey, modelName, brand, segment, bodyTyp
     }
   };
 
-  let accumulatedContext = "";
+  const layerOutputs = [];
 
   try {
     for (let i = 0; i < LAYER_INSTRUCTIONS.length; i++) {
+      if (signal?.aborted) throw new DOMException('Generation cancelled', 'AbortError');
       if (onProgress) {
         onProgress(i);
       }
 
-      const result = await callGemini(i, accumulatedContext);
-      accumulatedContext += `\n${result}\n\n`;
+      // Use only the last CONTEXT_WINDOW_SIZE outputs to prevent token explosion
+      const context = layerOutputs.slice(-CONTEXT_WINDOW_SIZE).join('\n\n');
+      const result = await callGemini(i, context);
+      layerOutputs.push(result);
 
       // 最後のレイヤー以外は、意図的に8秒待機して無料枠の制限を確実に回避する
       if (i < LAYER_INSTRUCTIONS.length - 1) {
         await sleep(8000);
+        if (signal?.aborted) throw new DOMException('Generation cancelled', 'AbortError');
       }
     }
 
-    return accumulatedContext;
+    return layerOutputs.join('\n\n');
   } catch (error) {
+    if (error.name === 'AbortError') throw error;
     console.error('Generation Error:', error);
     const isRateLimit = error.status === 429 || error.status === 'RESOURCE_EXHAUSTED' || (error.message && error.message.includes('429'));
     if (isRateLimit) {
