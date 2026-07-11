@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Settings, Car, Key, Loader2, History, Save, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Settings, Car, Key, Loader2, History, Save, Trash2, CheckCircle, AlertCircle, X } from 'lucide-react';
 import { generateConcept } from './aiService';
 import ConceptViewer from './components/ConceptViewer';
+import ErrorBoundary from './components/ErrorBoundary';
 import InputForm from './components/InputForm';
 import ProgressTracker from './components/ProgressTracker';
 import './App.css';
@@ -30,6 +31,13 @@ function App() {
   const [error, setError] = useState('');
   const [savedConcepts, setSavedConcepts] = useState(loadSavedConcepts);
   const [showHistory, setShowHistory] = useState(false);
+  const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 3000);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   const handleSaveKey = (e) => {
     e.preventDefault();
@@ -50,15 +58,27 @@ function App() {
       content: generatedResult
     };
     const updated = [newConcept, ...savedConcepts];
-    setSavedConcepts(updated);
-    localStorage.setItem('concept_history', JSON.stringify(updated));
-    alert('コンセプトを履歴に保存しました！');
+    try {
+      localStorage.setItem('concept_history', JSON.stringify(updated));
+      setSavedConcepts(updated);
+      setToast({ type: 'success', message: 'コンセプトを履歴に保存しました！' });
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+        setToast({ type: 'error', message: '保存領域が満杯です。古いコンセプトを削除してください。' });
+      } else {
+        setToast({ type: 'error', message: '保存中にエラーが発生しました。' });
+      }
+    }
   };
 
   const handleDeleteConcept = (id) => {
     const updated = savedConcepts.filter(c => c.id !== id);
     setSavedConcepts(updated);
-    localStorage.setItem('concept_history', JSON.stringify(updated));
+    try {
+      localStorage.setItem('concept_history', JSON.stringify(updated));
+    } catch {
+      // deletion reduces storage size, so quota errors are unlikely here
+    }
   };
 
   const loadConcept = (concept) => {
@@ -103,6 +123,14 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`toast toast-${toast.type}`}>
+          {toast.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
+          <span>{toast.message}</span>
+          <button className="toast-close" onClick={() => setToast(null)}><X size={14} /></button>
+        </div>
+      )}
       {/* Header */}
       <header className="glass-panel app-header">
         <div className="logo">
@@ -161,7 +189,9 @@ function App() {
                 <Save size={18} /> 保存する
               </button>
             </div>
-            <ConceptViewer markdownContent={generatedResult} />
+            <ErrorBoundary>
+              <ConceptViewer markdownContent={generatedResult} />
+            </ErrorBoundary>
           </div>
         )}
       </main>
@@ -190,8 +220,6 @@ function App() {
                   onChange={(e) => setModelName(e.target.value)}
                   style={{ padding: '0.8rem', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.1)', outline: 'none', background: 'rgba(255,255,255,0.8)', fontSize: '1rem' }}
                 >
-                  <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
-                  <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option>
                   <option value="gemini-2.5-flash">Gemini 2.5 Flash (推奨・高速・無償枠大)</option>
                   <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash Lite</option>
                   <option value="gemini-2.5-pro">Gemini 2.5 Pro (高精度・制限強)</option>

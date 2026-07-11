@@ -10,7 +10,9 @@ const LAYERS = [
   "Layer 7: 自社アセット・ブランドの強み分析中...",
   "Layer 8: インサイト（本質的課題）の抽出中...",
   "Layer 9: 飛躍的コンセプトの立案中...",
-  "Layer 10: 最終コンセプトの詳細具体化中..."
+  "Layer 10: 最終コンセプトの詳細具体化中...",
+  "Layer 11: 悪魔の代弁者による監査中...",
+  "Layer 12: デザイン思考による再構築と可視化中..."
 ];
 
 export default function ProgressTracker({ currentLayerIndex }) {
