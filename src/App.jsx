@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Settings, Car, Key, Loader2, History, Save, Trash2, CheckCircle, AlertCircle, X } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Settings, Car, Key, Loader2, History, Save, Trash2, CheckCircle, AlertCircle, X, Download } from 'lucide-react';
 import { generateConcept } from './aiService';
 import ConceptViewer from './components/ConceptViewer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -32,6 +32,7 @@ function App() {
   const [savedConcepts, setSavedConcepts] = useState(loadSavedConcepts);
   const [showHistory, setShowHistory] = useState(false);
   const [toast, setToast] = useState(null);
+  const abortControllerRef = useRef(null);
 
   useEffect(() => {
     if (!toast) return;
@@ -90,6 +91,27 @@ function App() {
     setShowHistory(false);
   };
 
+  const handleCancel = () => {
+    abortControllerRef.current?.abort();
+  };
+
+  const handleExportMarkdown = () => {
+    if (!generatedResult) return;
+    const safeSegment = segment.replace(/[^\w぀-鿿]/g, '_');
+    const safeBodyType = bodyType.replace(/[^\w぀-鿿]/g, '_');
+    const date = new Date().toISOString().split('T')[0];
+    const filename = `concept_${safeSegment}_${safeBodyType}_${date}.md`;
+    const blob = new Blob([generatedResult], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handleGenerate = async (e) => {
     e.preventDefault();
     if (!apiKey) {
@@ -98,6 +120,7 @@ function App() {
     }
     if (!segment || !bodyType) return;
 
+    abortControllerRef.current = new AbortController();
     setIsGenerating(true);
     setError('');
     setGeneratedResult('');
@@ -105,17 +128,20 @@ function App() {
 
     try {
       const result = await generateConcept(
-        apiKey, 
-        modelName, 
+        apiKey,
+        modelName,
         brand,
-        segment, 
-        bodyType, 
+        segment,
+        bodyType,
         powertrains,
-        (index) => setCurrentLayerIndex(index)
+        (index) => setCurrentLayerIndex(index),
+        abortControllerRef.current.signal
       );
       setGeneratedResult(result);
     } catch (err) {
-      setError(err.message);
+      if (err.name !== 'AbortError') {
+        setError(err.message);
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -173,8 +199,12 @@ function App() {
               <Loader2 className="spinner" size={48} />
             </div>
             <h2 className="text-gradient">AIが自律思考中...</h2>
-            
+
             <ProgressTracker currentLayerIndex={currentLayerIndex} />
+
+            <button className="cancel-btn" onClick={handleCancel} style={{ marginTop: '1.5rem', alignSelf: 'center' }}>
+              生成をキャンセル
+            </button>
           </div>
         )}
 
@@ -185,9 +215,14 @@ function App() {
               <button className="back-btn" onClick={() => { setGeneratedResult(''); setSegment(''); setBodyType(''); setPowertrains([]); }}>
                 新しいコンセプトを生成
               </button>
-              <button className="save-btn" onClick={handleSaveConcept} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Save size={18} /> 保存する
-              </button>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button className="cancel-btn" onClick={handleExportMarkdown} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Download size={18} /> MDで保存
+                </button>
+                <button className="save-btn" onClick={handleSaveConcept} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Save size={18} /> 保存する
+                </button>
+              </div>
             </div>
             <ErrorBoundary>
               <ConceptViewer markdownContent={generatedResult} />
