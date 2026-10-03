@@ -4,16 +4,28 @@
 
 ## スタック
 
-- Node.js (v18+) / フロントエンド中心。Google Gemini API を利用
+- Node.js 20.19+ または 22.12+（Vite 8 の要件。CI は Node 20）/ フロントエンド中心。Google Gemini API を利用
 - 可視化: `recharts`（レーダーチャート等）
 - XSS対策: `rehype-sanitize`
 
 ## 実行
 
 ```bash
-npm install
-npm run dev   # README参照。詳細な起動コマンドはpackage.jsonを確認
+npm ci
+npm run dev       # 開発サーバー（Vite）
+npm run lint      # ESLint
+npm run test      # Vitest（jsdom）
+npm run build     # dist/ に出力
+npm run preview   # build 結果の確認
 ```
+
+CI（`.github/workflows/ci.yml`）は Node 20 で `lint` → `test` → `build` を実行する。変更後はこの 3 つが通ることを確かめる。
+
+- Node 25 では Node 組み込みの `localStorage` が jsdom のものを上書きし、`utils.test.js` が `localStorage.clear is not a function` で落ちる。手元が Node 25 なら `NODE_OPTIONS=--no-experimental-webstorage npm run test` で実行する（CI の Node 20 では起きない）
+
+### クラウドサンドボックスでの確認
+
+Gemini の API キーは画面から入力してブラウザの localStorage に保存する方式で、環境変数からは読まない。そのためクラウドセッションでは企画書の生成（API 呼び出し）までは確かめられない。確認は `npm run lint`・`npm run test`・`npm run build` の 3 つで行い、画面の確認が必要な変更はプレビュー URL か手元でユーザーに確認してもらう。
 
 ## デザイン・企画スタイルの好み
 
