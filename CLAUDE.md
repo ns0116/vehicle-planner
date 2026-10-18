@@ -4,7 +4,7 @@
 
 ## スタック
 
-- Node.js 20.19+ または 22.12+（Vite 8 の要件。CI は Node 20）/ フロントエンド中心。Google Gemini API を利用
+- Node.js 22.22+ または 24.15+（jsdom 30 の依存の要件。Vite 8 は 20.19+ でも動く。CI は Node 22）/ フロントエンド中心。Google Gemini API を利用
 - 可視化: `recharts`（レーダーチャート等）
 - XSS対策: `rehype-sanitize`
 
@@ -19,9 +19,9 @@ npm run build     # dist/ に出力
 npm run preview   # build 結果の確認
 ```
 
-CI（`.github/workflows/ci.yml`）は Node 20 で `lint` → `test` → `build` を実行する。変更後はこの 3 つが通ることを確かめる。
+CI（`.github/workflows/ci.yml`）は Node 22 で `lint` → `test` → `build` を実行する。変更後はこの 3 つが通ることを確かめる。
 
-- Node 25 では Node 組み込みの `localStorage` が jsdom のものを上書きし、`utils.test.js` が `localStorage.clear is not a function` で落ちる。手元が Node 25 なら `NODE_OPTIONS=--no-experimental-webstorage npm run test` で実行する（CI の Node 20 では起きない）
+- Node 25 では Node 組み込みの `localStorage` が jsdom のものを上書きし、`utils.test.js` が `localStorage.clear is not a function` で落ちる。手元が Node 25 なら `NODE_OPTIONS=--no-experimental-webstorage npm run test` で実行する（CI の Node 22 では起きない）
 
 ### クラウドサンドボックスでの確認
 
