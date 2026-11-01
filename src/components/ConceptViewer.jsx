@@ -95,7 +95,7 @@ export default function ConceptViewer({ markdownContent }) {
     <div className="concept-viewer-container">
       <div className="concept-header glass-panel">
         <h2 className="text-gradient">Generated Concept Analysis</h2>
-        <p>AIが思考したコンセプト立案の全プロセス（監査と再構築ループを含む）</p>
+        <p>コンセプト立案の全プロセス（監査と再構築のループを含む）</p>
       </div>
 
       <div className="layers-stack">

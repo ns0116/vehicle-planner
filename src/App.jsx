@@ -180,7 +180,7 @@ function App() {
         {!generatedResult && !isGenerating && (
           <div className="glass-panel input-section fade-in">
             <h2>次世代車両の条件を入力</h2>
-            <p className="subtitle">OSINTとAIを活用し、既存の枠組みを打ち破るコンセプトを自律生成します。</p>
+            <p className="subtitle">OSINTとAIを活用し、車両のコンセプトを自動で生成します。</p>
             
             <InputForm 
               brand={brand} setBrand={setBrand}
