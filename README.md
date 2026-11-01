@@ -16,7 +16,7 @@ Vehicle Plannerは、生成AIを活用してプロフェッショナルレベル
 ## 開発環境のセットアップ (Getting Started)
 
 ### 前提条件
-- Node.js (v18以上推奨)
+- Node.js 22.22 以上または 24.15 以上（jsdom 30 の要件。CI は Node 22）
 - Google Gemini API Key
 
 ### インストールと起動
