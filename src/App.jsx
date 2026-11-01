@@ -217,7 +217,7 @@ function App() {
               </button>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
                 <button className="cancel-btn" onClick={handleExportMarkdown} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Download size={18} /> MDで保存
+                  <Download size={18} /> Markdownで保存
                 </button>
                 <button className="save-btn" onClick={handleSaveConcept} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Save size={18} /> 保存する
@@ -257,7 +257,7 @@ function App() {
                 >
                   <option value="gemini-2.5-flash">Gemini 2.5 Flash (推奨・高速・無償枠大)</option>
                   <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash Lite</option>
-                  <option value="gemini-2.5-pro">Gemini 2.5 Pro (高精度・制限強)</option>
+                  <option value="gemini-2.5-pro">Gemini 2.5 Pro (高精度・利用制限が厳しい)</option>
                 </select>
               </div>
               <div className="modal-actions">
