@@ -1,5 +1,9 @@
 # Vehicle Planner (次世代車両コンセプトジェネレーター)
 
+> **凍結（2026-11-07）**: このリポジトリは手入れを止めています。コードはそのまま残しますが、依存関係の更新や不具合の修正は行いません。
+>
+> **Frozen (2026-11-07)**: This repository is no longer maintained. The code stays as-is, with no dependency updates or bug fixes.
+
 Vehicle Plannerは、生成AIを活用して自動車の商品企画書（コンセプト）を自律的に生成するWebアプリケーションです。
 
 ## 特徴 (Features)
